@@ -9,7 +9,7 @@ import Foundation
 
 extension DeezerAPI {
     
-    public func getUserFavTrackIds() async throws -> [DeezerFavEntry] {
+    public func getUserFavTrackIds() async throws -> ([DeezerFavEntry], String) {
         
         // Get the IDs first
         let trackIds: getFavoriteIdsResponse = try await self.requestGwLight(
@@ -21,24 +21,24 @@ extension DeezerAPI {
         )
         
         // No tracks
-        if trackIds.count == 0 { return [] }
+        if trackIds.count == 0 { return ([], trackIds.checksum) }
         
-        return trackIds.data.map {
+        return (trackIds.data.map {
             DeezerFavEntry(id: Int($0.SNG_ID)!, dateFavorite: $0.DATE_FAVORITE)
-        }
+        }, trackIds.checksum )
         
         
     }
 
     
-    public func getUserFavTracks() async throws -> [DeezerTrack] {
+    public func getUserFavTracks() async throws -> ([DeezerTrack], String) {
 
         // Get the track ids from the function above
         let trackIds = try await self.getUserFavTrackIds()
 
         var tracks: [DeezerTrack] = []
 
-        for chunk in trackIds.chunks(ofCount: 500) {
+        for chunk in trackIds.0.chunks(ofCount: 500) {
             tracks.append(
                 contentsOf: try await self.getTracks(
                     chunk.map(\.id),
@@ -47,7 +47,7 @@ extension DeezerAPI {
             )
         }
 
-        return tracks;
+        return (tracks, trackIds.1);
 
     }
 

@@ -11,6 +11,8 @@ struct getFavoriteIdsResponse: Decodable {
     let total: Int
     let data: [FAV_OBJ]
     
+    let checksum: String
+    
     struct FAV_OBJ: Decodable {
         
         let DATE_FAVORITE: Int

@@ -62,9 +62,9 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let tracks = try await deerzerApi.getUserFavTracks()
     
-    print(tracks.map{ "\($0.title) - \($0.dateFavorite!)" }.joined(by: "\n"))
+    print(tracks.0.map{ "\($0.title) - \($0.dateFavorite!)" }.joined(by: "\n"))
     
-    #expect(tracks.count > 0)
+    #expect(tracks.0.count > 0)
 }
 
 @Test func GetTrackUrls() async throws {
