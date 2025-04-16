@@ -7,6 +7,9 @@
 
 enum DeezerApiError: Error {
     case invalidResponse
+    case invalidRequest
     case apiError
+    case invalidLicense
+    case mediaNotAvailable
     case urlSessionError(Error)
 }

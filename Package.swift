@@ -15,11 +15,20 @@ let package = Package(
             name: "DeezerAPISwift",
             targets: ["DeezerAPISwift"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.8.3"),
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "DeezerAPISwift"),
+            name: "DeezerAPISwift",
+            dependencies: [
+                .product(name: "CryptoSwift", package: "CryptoSwift"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client")
+            ]
+        ),
         .testTarget(
             name: "DeezerAPISwiftTests",
             dependencies: ["DeezerAPISwift"]

@@ -23,6 +23,20 @@ struct getUserDataResponse: Decodable {
     // Used for authenticating all gwLight requests (this is auth_token)
     let checkForm: String
     
+    struct USER_OBJ: Decodable {
+        struct OPTIONS_OBJ: Decodable {
+            let license_token: String
+        }
+        
+        let OPTIONS: OPTIONS_OBJ
+        
+        let EMAIL: String?
+        let BLOG_NAME: String
+        let USER_ID: Int
+        let USER_PICTURE: String
+    }
+    
     // TODO: add user info from USER
+    let USER: USER_OBJ
     
 }

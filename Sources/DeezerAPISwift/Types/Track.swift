@@ -21,4 +21,43 @@ public struct DeezerTrack: Decodable {
     let duration: Int
     
     let explicitContent: Bool
+    
+    let trackToken: String?
+    let trackTokenExpires: Int?
+    
+    let artists: [DeezerArtist]
+    
+    let dateFavorite: Int?
+    
+    static func fromFragmentTrack(_ response: fragmentTrack, dateFavorite: Int? = nil) throws -> DeezerTrack {
+        
+        guard let trackId = Int(response.SNG_ID),
+            let artistId = Int(response.ART_ID), let albumId = Int(response.ALB_ID),
+            let trackNum = Int(response.TRACK_NUMBER),
+            let diskNum = Int(response.DISK_NUMBER),
+            let dur = Int(response.DURATION)
+        else {
+            throw DeezerApiError.invalidResponse
+        }
+
+        return DeezerTrack(
+            title: response.SNG_TITLE,
+            id: trackId,
+            artistId: artistId,
+            artistName: response.ARTISTS.map(\.ART_NAME).joined(separator: ", "),
+            albumId: albumId,
+            albumName: response.ALB_TITLE,
+            trackNum: trackNum,
+            diskNum: diskNum,
+            duration: dur,
+            explicitContent: response.EXPLICIT_LYRICS == "1",
+            trackToken: response.TRACK_TOKEN,
+            trackTokenExpires: response.TRACK_TOKEN_EXPIRE,
+            artists: try response.ARTISTS.map { try DeezerArtist.fromFragmentArtistResponse($0) },
+            dateFavorite: dateFavorite
+        )
+        
+    }
+    
+    
 }

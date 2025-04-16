@@ -13,7 +13,8 @@ extension DeezerAPI {
     func request(
         _ urlString: String,
         parameters: [String: Any]? = nil,
-        body: [String: Any]? = nil
+        body: [String: Any]? = nil,
+        method: String = "POST"
     ) async throws -> Data {
 
         // Create a new URL session
@@ -28,7 +29,7 @@ extension DeezerAPI {
 
         // Create a request from the url
         var req = URLRequest(url: url)
-        req.httpMethod = "POST"
+        req.httpMethod = method
 
         // Set the cookies (for auth)
         req.httpShouldHandleCookies = true

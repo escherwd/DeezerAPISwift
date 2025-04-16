@@ -1,36 +1,40 @@
 //
-//  Encryption.swift
+//  Crypto.swift
 //  DeezerAPISwift
 //
 //  Created by Escher Wright-Dykhouse on 4/14/25.
 //
 
 import CryptoKit
+import Foundation
+
+// The blowfish secret key - required for generating the track-specific keys
+fileprivate let deezerBlowfishSecret: String = ProcessInfo.processInfo.environment["DEEZER_BLOWFISH_SECRET"]!
 
 struct DeezerApiEncryption {
     
-    static func generateBlowfishKey(trackId: String) {
-        let SECRET = "g4el58wc0zvf9na1";
+    // Generates a Blowfish key for decrypting tracks
+    // Taken from the Deemix library
+    
+    static func generateBlowfishKey(trackId: Int) -> String {
         
-        let idMd5 = Insecure.MD5.hash(data: trackId.data(using: .ascii)!)
+        let trackIdStr = String(trackId)
         
+        let SECRET = deezerBlowfishSecret.map({ $0.asciiValue! });
         
+        let idMd5 = Insecure.MD5.hash(data: trackIdStr.data(using: .ascii)!)
         
-//        const idMd5 = _md5(trackId.toString(), "ascii");
+        let chars = idMd5.compactMap({ String(format: "%02x", $0) }).joined().map({ $0.asciiValue! })
+        var bfKey = ""
         
-        let bfKey = "";
-//        for i in 0..<16 {
-//            bfKey += String(UnicodeScalar(Int(idMd5[i].hashValue) ^ Int(idMd5[i + 16].hashValue) ^ Int(SECRET.unicodeScalars.first!.value))!)
-//        }
+        for i in 0..<16 {
+            let firstByte = chars[i]
+            let secondByte = chars[i + 16]
+            let thirdByte: UInt8 = SECRET[i]
+            bfKey += String(UnicodeScalar(Int(firstByte) ^ Int(secondByte) ^ Int(thirdByte))!)
+        }
         
-        
-        
-//        for (let i = 0; i < 16; i++) {
-//            bfKey += String.fromCharCode(
-//                idMd5.charCodeAt(i) ^ idMd5.charCodeAt(i + 16) ^ SECRET.charCodeAt(i)
-//            );
-//        }
-//        return bfKey
+       return bfKey
     }
     
 }
