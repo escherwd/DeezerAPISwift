@@ -46,7 +46,7 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
 }
 
-@Test func getTracks() async throws {
+@Test func GetTracks() async throws {
     let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
     
     let tracks = try await deezerApi.getTracks([ 1238251242, 870080482, 908917602 ])
@@ -57,14 +57,44 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     #expect(tracks.first?.title == "Moving Men (feat. Mac DeMarco)")
 }
 
-@Test func getUserFavTracks() async throws {
-    let deerzerApi = DeezerAPI(withOnlyArl: deezerArl)
+@Test func GetUserFavTracks() async throws {
+    let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
     
-    let tracks = try await deerzerApi.getUserFavTracks()
+    let tracks = try await deezerApi.getUserFavTracks()
     
     print(tracks.0.map{ "\($0.title) - \($0.dateFavorite!)" }.joined(by: "\n"))
     
     #expect(tracks.0.count > 0)
+}
+
+@Test func GetUserFavAlbums() async throws {
+    let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
+    
+    let albums = try await deezerApi.getUserFavAlbums()
+    
+    print(albums.0.map{ "\($0.title) - \($0.dateFavorite!)" }.joined(by: "\n"))
+    
+    #expect(albums.0.count > 0)
+}
+
+@Test func GetUserFavArtists() async throws {
+    let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
+    
+    let artists = try await deezerApi.getUserFavArtists()
+    
+    print(artists.0.map{ "\($0.name) - \($0.dateFavorite!)" }.joined(by: "\n"))
+    
+    #expect(artists.0.count > 0)
+}
+
+@Test func GetUserFavPlaylists() async throws {
+    let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
+    
+    let playlists = try await deezerApi.getUserFavPlaylists()
+    
+    print(playlists.map{ "\($0.title) - \($0.parentUserName)" }.joined(by: "\n"))
+    
+    #expect(playlists.count > 0)
 }
 
 @Test func GetTrackUrls() async throws {
@@ -86,7 +116,7 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
 @Test func StreamTrack() async throws {
     let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
     
-    let album = try await deezerApi.getAlbum(45740531)
+    let album = try await deezerApi.getAlbum(297946982)
     
     let track = album.tracks!.first!
     
@@ -94,7 +124,7 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     try await deezerApi.streamTrack(fromMedia: media)
     
-    let artist = try await deezerApi.getArtist(album.artists.first!.id)
+    let artist = try await deezerApi.getArtist(album.artists!.first!.id)
     print(artist)
     
     #expect(media.urls.count > 0)

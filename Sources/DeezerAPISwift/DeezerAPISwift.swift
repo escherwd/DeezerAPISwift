@@ -27,6 +27,9 @@ public class DeezerAPI {
         self.arl = arl
         self.lang = lang
     }
+    
+    // Store the userId
+    var userId: Int?
 
     // The ARL is like a device token, it doesn't change often.
     let arl: String

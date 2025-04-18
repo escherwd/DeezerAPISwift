@@ -15,6 +15,11 @@ extension DeezerAPI {
     // TODO: make concurrent
 
     public func streamTrack(fromMedia media: DeezerMedia) async throws {
+        
+        // Before anything else, ensure we have the blowfish key
+        let blowfishKey = try DeezerApiEncryption.generateBlowfishKey(
+            trackId: media.trackId
+        )
 
         // Right now we'll just use the first available media url
         // Not really sure what the functional difference between streams are
@@ -42,74 +47,89 @@ extension DeezerAPI {
         // For keeping track of the download progress
         var finishedBytes = 0
 
-        // The buffer that the file will be written to
-        // Pre-allocate the memory
-        var outputData = Data(capacity: expectedBytes)
-
         // Decryption utilities
         let decryptChunkSize = 2048 * 3  // 6144
-        let blowfishKey = DeezerApiEncryption.generateBlowfishKey(
-            trackId: media.trackId
-        )
 
-        // The read head starts at 0
-        var inputReadHead = 0
+        
+        
+        // Allocate 500kb for decrypting the track
+        let processBufferCapacity = 1024 * 500
+        var processBuffer = Data(capacity: processBufferCapacity)
+        
+        
+        // Open the file handler
+        let outUrl = URL.documentsDirectory.appending(
+            path:
+                "decrypted_\(media.trackId).\(media.format == .flac ? "flac" : "mp3")"
+        )
+        if !FileManager.default.createFile(atPath: outUrl.path(), contents: nil) {
+            throw DeezerApiError.mediaNotAvailable
+        }
+//        try outputData.write(to: outUrl, options: .atomic)
+        let fileHandle = try FileHandle(forWritingTo: outUrl)
+        
 
         for try await var chunk in response.body {
-
+            
             finishedBytes += chunk.readableBytes
             let prog = Double(finishedBytes) / Double(expectedBytes) * 100
-            print("Progress: \(prog)%")
-
+            print("Progress: \(prog)% - \(chunk.readableBytes/1024) kb")
+            
             // Read the data of this chunk
             guard let chunkData = chunk.readData(length: chunk.readableBytes)
             else {
                 continue
             }
-
+            
             // Continue building entire inputData buffer
-            outputData.append(chunkData)
-
-            // If some chunks are available, decrypt them before moving on to the next response chunk
-            // Do decryption every 50 chunks?
-            // At 320kbps this is equivilent to decrypting in 1-second batches
-            if outputData.count - inputReadHead >= decryptChunkSize * 50
-                || expectedBytes - inputReadHead <= decryptChunkSize * 5
-            {
-                while outputData.count - inputReadHead >= decryptChunkSize {
-
+            //            outputData.append(chunkData)
+            processBuffer.append(chunkData)
+            
+            
+            if processBuffer.count >= decryptChunkSize * 25 || expectedBytes - finishedBytes <= decryptChunkSize * 5 {
+                
+                var readHead = 0
+                
+                while processBuffer.count - readHead >= decryptChunkSize {
+                    
                     // Only the first 2048 bytes of the chunk actually need to be decrypted
-                    let range = inputReadHead..<(inputReadHead + 2048)
-
+                    let range = readHead..<(readHead + 2048)
+                    
                     // Decrypt the data in-place
-                    outputData.replaceSubrange(
-                        range,
-                        with: Data(
-                            try Blowfish(
-                                key: blowfishKey.bytes,
-                                blockMode: CBC(iv: [0, 1, 2, 3, 4, 5, 6, 7]),
-                                padding: .noPadding
-                            ).decrypt(outputData.bytes[range])
-                        )
+                    let decBlock = Data(
+                        try Blowfish(
+                            key: blowfishKey.bytes,
+                            blockMode: CBC(iv: [0, 1, 2, 3, 4, 5, 6, 7]),
+                            padding: .noPadding
+                        ).decrypt(processBuffer.bytes[range])
                     )
-
-                    // Increment the read head
-                    inputReadHead += decryptChunkSize
-
+                    
+                    processBuffer[range] = decBlock
+                    
+                    readHead += decryptChunkSize
+                    
                 }
+                
+                // Write out up to the read head
+                try fileHandle.write(contentsOf: processBuffer[..<readHead])
+                // Clear the buffer
+                processBuffer = Data(processBuffer.bytes[readHead...])
+                processBuffer.reserveCapacity(processBufferCapacity)
+                
+                // Delete unused responses
+                chunk.clear()
+                
             }
             
-            response.body.dropFirst()
-
         }
+            
 
-        // Write outputData to disk
-        let outUrl = URL.documentsDirectory.appending(
-            path:
-                "decrypted_\(media.trackId).\(media.format == .flac ? "flac" : "mp3")"
-        )
-        try outputData.write(to: outUrl, options: .atomic)
+
         
+        // Write the remaining data and close
+        
+        try fileHandle.write(contentsOf: processBuffer)
+        try fileHandle.close()
         
 
     }

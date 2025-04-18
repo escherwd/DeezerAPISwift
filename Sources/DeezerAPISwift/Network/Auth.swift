@@ -17,6 +17,8 @@ extension DeezerAPI {
         self.lang = userInfoRes.SETTING_LANG
         self.playerToken = userInfoRes.PLAYER_TOKEN
         
+        self.userId = userInfoRes.USER.USER_ID
+        
         self.licenseToken = userInfoRes.USER.OPTIONS.license_token
         
     }

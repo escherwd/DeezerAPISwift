@@ -5,6 +5,8 @@
 //  Created by Escher Wright-Dykhouse on 4/11/25.
 //
 
+import Foundation
+
 public struct DeezerArtist: Decodable {
     let id: Int
     let name: String
@@ -17,6 +19,8 @@ public struct DeezerArtist: Decodable {
     let relatedArtists: [DeezerArtist]?
 
     let albums: [DeezerAlbum]?
+    
+    let dateFavorite: Date?
 
     static func fromPageArtistResponse(_ response: pageArtistResponse)
         throws -> DeezerArtist
@@ -42,6 +46,7 @@ public struct DeezerArtist: Decodable {
             albums: try response.ALBUMS?.data.map {
                 try DeezerAlbum.fromFragmentAlbumResponse($0)
             },
+            dateFavorite: nil
         )
 
     }
@@ -53,16 +58,20 @@ public struct DeezerArtist: Decodable {
         guard let artistId = Int(response.ART_ID) else {
             throw DeezerApiError.invalidResponse
         }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
         return DeezerArtist(
             id: artistId,
             name: response.ART_NAME,
             picture: response.ART_PICTURE,
-            numFans: nil,
+            numFans: response.NB_FAN,
             bio: nil,
             topTracks: nil,
             relatedArtists: nil,
-            albums: nil
+            albums: nil,
+            dateFavorite: response.DATE_FAVORITE != nil ? dateFormatter.date(from: response.DATE_FAVORITE!) : nil
         )
 
     }

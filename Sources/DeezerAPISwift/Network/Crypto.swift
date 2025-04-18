@@ -9,18 +9,22 @@ import CryptoKit
 import Foundation
 
 // The blowfish secret key - required for generating the track-specific keys
-fileprivate let deezerBlowfishSecret: String = ProcessInfo.processInfo.environment["DEEZER_BLOWFISH_SECRET"]!
+fileprivate let deezerBlowfishSecret: String? = ProcessInfo.processInfo.environment["DEEZER_BLOWFISH_SECRET"]
 
 struct DeezerApiEncryption {
     
     // Generates a Blowfish key for decrypting tracks
     // Taken from the Deemix library
     
-    static func generateBlowfishKey(trackId: Int) -> String {
+    static func generateBlowfishKey(trackId: Int) throws -> String {
+        
+        guard let secret = deezerBlowfishSecret else {
+            throw DeezerApiError.invalidDeezerSecret
+        }
         
         let trackIdStr = String(trackId)
         
-        let SECRET = deezerBlowfishSecret.map({ $0.asciiValue! });
+        let SECRET = secret.map({ $0.asciiValue! });
         
         let idMd5 = Insecure.MD5.hash(data: trackIdStr.data(using: .ascii)!)
         

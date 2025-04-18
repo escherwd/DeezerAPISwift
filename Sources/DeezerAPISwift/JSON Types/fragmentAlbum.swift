@@ -32,3 +32,19 @@ struct fragmentAlbum: Decodable {
     let ARTISTS: [fragmentArtist]
     
 }
+
+
+// Used in getUserFavAlbums
+struct fragmentAlbumTiny: Decodable {
+    
+    let ALB_ID: String
+    let ALB_PICTURE: String
+    let ALB_TITLE: String
+    
+    let ART_NAME: String
+    let ART_ID: String
+    
+    let DATE_FAVORITE: String
+    let PHYSICAL_RELEASE_DATE: String
+    
+}

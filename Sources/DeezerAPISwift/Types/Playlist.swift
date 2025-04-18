@@ -5,6 +5,8 @@
 //  Created by Escher Wright-Dykhouse on 4/15/25.
 //
 
+import Foundation
+
 public struct DeezerPlaylist: Decodable {
 
     let id: Int
@@ -20,13 +22,13 @@ public struct DeezerPlaylist: Decodable {
 
     let isFavorite: Bool
 
-    let lastSeen: Int?
-    let numFans: Int
+    let lastSeen: Date?
+    let numFans: Int?
     let numSongs: Int
 
-    let parentUserName: String
-    let parentUserId: String
-    let parentUserPicture: String
+    let parentUserName: String?
+    let parentUserId: Int
+    let parentUserPicture: String?
 
     let pictureType: DeezerPlaylistPictureType
     let playlistPicture: String
@@ -53,7 +55,7 @@ public struct DeezerPlaylist: Decodable {
         throws -> DeezerPlaylist
     {
 
-        guard let id = Int(response.DATA.PLAYLIST_ID) else {
+        guard let id = Int(response.DATA.PLAYLIST_ID), let parentUserId = Int(response.DATA.PARENT_USER_ID) else {
             throw DeezerApiError.invalidResponse
         }
 
@@ -66,17 +68,54 @@ public struct DeezerPlaylist: Decodable {
             description: response.DATA.DESCRIPTION,
             duration: response.DATA.DURATION,
             isFavorite: response.DATA.IS_FAVORITE,
-            lastSeen: response.DATA.LAST_SEEN,
+            lastSeen: Date(timeIntervalSince1970: TimeInterval(response.DATA.LAST_SEEN)),
             numFans: response.DATA.NB_FAN,
             numSongs: response.DATA.NB_SONG,
             parentUserName: response.DATA.PARENT_USERNAME,
-            parentUserId: response.DATA.PARENT_USER_ID,
+            parentUserId: parentUserId,
             parentUserPicture: response.DATA.PARENT_USER_PICTURE,
             pictureType: .init(rawValue: response.DATA.PICTURE_TYPE)!,
             playlistPicture: response.DATA.PLAYLIST_PICTURE,
             status: .init(rawValue: response.DATA.STATUS)!,
             collabKey: response.DATA.COLLAB_KEY,
-            tracks: try response.SONGS.data.map { try DeezerTrack.fromFragmentTrack($0) }
+            tracks: try response.SONGS.data.map {
+                try DeezerTrack.fromFragmentTrack($0)
+            }
+        )
+
+    }
+
+    static func fromFragmentPlaylistResponse(_ response: fragmentPlaylist)
+        throws -> DeezerPlaylist
+    {
+
+        guard let id = Int(response.PLAYLIST_ID), let parentUserId = Int(response.PARENT_USER_ID) else {
+            throw DeezerApiError.invalidResponse
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        return DeezerPlaylist(
+            id: id,
+            title: response.TITLE,
+            checksum: nil,
+            dateAdded: response.DATE_ADD,
+            dateModified: nil,
+            description: nil,
+            duration: nil,
+            isFavorite: response.DATE_FAVORITE != nil,
+            lastSeen: response.LAST_SEEN != nil ? dateFormatter.date(from: response.LAST_SEEN!) : nil,
+            numFans: nil,
+            numSongs: response.NB_SONG,
+            parentUserName: response.PARENT_USERNAME,
+            parentUserId: parentUserId,
+            parentUserPicture: nil,
+            pictureType: .init(rawValue: response.PICTURE_TYPE)!,
+            playlistPicture: response.PLAYLIST_PICTURE,
+            status: .init(rawValue: response.STATUS)!,
+            collabKey: nil,
+            tracks: nil
         )
 
     }

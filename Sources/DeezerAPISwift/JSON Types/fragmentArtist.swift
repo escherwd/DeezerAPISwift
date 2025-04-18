@@ -11,4 +11,7 @@ struct fragmentArtist: Decodable {
     let ART_NAME: String
     let ART_PICTURE: String
     
+    let DATE_FAVORITE: String?
+    let NB_FAN: Int?
+    
 }
