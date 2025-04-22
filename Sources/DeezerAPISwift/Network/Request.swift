@@ -40,7 +40,7 @@ extension DeezerAPI {
         req.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         // Add entries to the body of the request
-        if let body = body {
+        if let body = body, method != "GET" {
             let jsonData = try JSONSerialization.data(
                 withJSONObject: body,
                 options: []
@@ -60,7 +60,8 @@ extension DeezerAPI {
         _ method: String,
         parameters: [String: Any]? = nil,
         body: [String: Any]? = nil,
-        ignoreCredCheck: Bool = false
+        ignoreCredCheck: Bool = false,
+        httpMethod: String = "POST"
     ) async throws -> T {
 
         // Ensure credentials exist
@@ -81,7 +82,8 @@ extension DeezerAPI {
             ].merging(parameters ?? [:], uniquingKeysWith: { c, _ in c }),
             body: [
                 "lang": self.lang ?? "us"
-            ].merging(body ?? [:], uniquingKeysWith: { c, _ in c })
+            ].merging(body ?? [:], uniquingKeysWith: { c, _ in c }),
+            method: httpMethod
         )
 
         // First it will try to serialize with an error

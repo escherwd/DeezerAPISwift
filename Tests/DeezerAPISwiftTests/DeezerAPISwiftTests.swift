@@ -12,10 +12,6 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let album = try await deezerApi.getAlbum(705543991)
     
-    print(deezerApi.licenseToken ?? "no license token")
-    
-    print(album)
-    
     #expect(album.id == 705543991)
     #expect(album.title == "Grand Voyage")
     #expect(album.tracks?.count == 12)
@@ -27,8 +23,6 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let artist = try await deezerApi.getArtist(127257)
     
-    print(artist)
-    
     #expect(artist.id == 127257)
     #expect(artist.name == "Tennis")
 }
@@ -38,8 +32,6 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
     
     let playlist = try await deezerApi.getPlaylist(1950224742)
-    
-    print(playlist)
     
     #expect(playlist.title == "Bedroom Electronic")
     
@@ -51,10 +43,17 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let tracks = try await deezerApi.getTracks([ 1238251242, 870080482, 908917602 ])
     
-    print(tracks)
-    
     #expect(tracks.count == 3)
     #expect(tracks.first?.title == "Moving Men (feat. Mac DeMarco)")
+}
+
+@Test func GetHome() async throws {
+    let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
+    
+    let home = try await deezerApi.getHome()
+    
+    #expect(home.expiresAt > Date())
+    #expect(home.sections.count > 0)
 }
 
 @Test func GetUserFavTracks() async throws {
@@ -62,7 +61,6 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let tracks = try await deezerApi.getUserFavTracks()
     
-    print(tracks.0.map{ "\($0.title) - \($0.dateFavorite!)" }.joined(by: "\n"))
     
     #expect(tracks.0.count > 0)
 }
@@ -72,8 +70,6 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let albums = try await deezerApi.getUserFavAlbums()
     
-    print(albums.0.map{ "\($0.title) - \($0.dateFavorite!)" }.joined(by: "\n"))
-    
     #expect(albums.0.count > 0)
 }
 
@@ -81,8 +77,6 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
     
     let artists = try await deezerApi.getUserFavArtists()
-    
-    print(artists.0.map{ "\($0.name) - \($0.dateFavorite!)" }.joined(by: "\n"))
     
     #expect(artists.0.count > 0)
 }
@@ -92,9 +86,15 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let playlists = try await deezerApi.getUserFavPlaylists()
     
-    print(playlists.map{ "\($0.title) - \($0.parentUserName)" }.joined(by: "\n"))
-    
     #expect(playlists.count > 0)
+}
+
+@Test func GetUserProfile() async throws {
+    let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
+    
+    let profile = try await deezerApi.getUserProfile()
+    
+    #expect(profile.id == deezerApi.userId)
 }
 
 @Test func GetTrackUrls() async throws {
@@ -104,11 +104,7 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let track = album.tracks!.first!
     
-    print(track.id)
-    
     let media = try await deezerApi.getTrackUrls(forTrackToken: track.trackToken!, andTrackId: track.id)
-    
-    print(media)
     
     #expect(media.urls.count > 0)
 }
@@ -124,8 +120,7 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     try await deezerApi.streamTrack(fromMedia: media)
     
-    let artist = try await deezerApi.getArtist(album.artists!.first!.id)
-    print(artist)
+//    let artist = try await deezerApi.getArtist(album.artists!.first!.id)
     
     #expect(media.urls.count > 0)
 }

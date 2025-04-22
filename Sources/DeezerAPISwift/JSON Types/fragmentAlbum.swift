@@ -44,7 +44,7 @@ struct fragmentAlbumTiny: Decodable {
     let ART_NAME: String
     let ART_ID: String
     
-    let DATE_FAVORITE: String
+    let DATE_FAVORITE: String?
     let PHYSICAL_RELEASE_DATE: String
     
 }

@@ -23,14 +23,19 @@ struct pageArtistResponse: Decodable {
         case TOP
         case ALBUMS
         case RELATED_ARTISTS
+        case RELATED_PLAYLIST
+        case SELECTED_PLAYLIST
+
     }
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.DATA = try container.decode(pageArtistResponse.DATA_OBJ.self, forKey: .DATA)
-        self.TOP = try container.decode(pageArtistResponse.TOP_OBJ?.self, forKey: .TOP)
-        self.ALBUMS = try container.decode(pageArtistResponse.ALBUMS_OBJ?.self, forKey: .ALBUMS)
-        self.RELATED_ARTISTS = try container.decode(pageArtistResponse.RELATED_ARTISTS_OBJ?.self, forKey: .RELATED_ARTISTS)
+        self.TOP = try container.decode(fragmentCountedChildren<fragmentTrack>?.self, forKey: .TOP)
+        self.ALBUMS = try container.decode(fragmentCountedChildren<fragmentAlbum>?.self, forKey: .ALBUMS)
+        self.RELATED_ARTISTS = try container.decode(fragmentCountedChildren<fragmentArtist>?.self, forKey: .RELATED_ARTISTS)
+        self.RELATED_PLAYLIST = try container.decode(fragmentCountedChildren<fragmentPlaylist>?.self, forKey: .RELATED_PLAYLIST)
+        self.SELECTED_PLAYLIST = try container.decode(fragmentCountedChildren<fragmentPlaylist>?.self, forKey: .SELECTED_PLAYLIST)
         
         // Decode the Bio into a BIO_OBJ and take either the BIO or RESUME from it
         let maybeBio = try? container.decodeIfPresent(
@@ -62,37 +67,11 @@ struct pageArtistResponse: Decodable {
 
     let DATA: DATA_OBJ
     
-    
-    struct TOP_OBJ: Decodable {
-        
-        let count: Int
-        let total: Int
-        
-        let data: [fragmentTrack]
-        
-    }
-    
-    let TOP: TOP_OBJ?
-    
-    
-    struct ALBUMS_OBJ: Decodable {
-        
-        let count: Int
-        let total: Int
-        
-        let data: [fragmentAlbum]
-    }
-    
-    let ALBUMS: ALBUMS_OBJ?
-    
-    struct RELATED_ARTISTS_OBJ: Decodable {
-        
-        let count: Int
-        let total: Int
-        
-        let data: [fragmentArtist]
-    }
-    
-    let RELATED_ARTISTS: RELATED_ARTISTS_OBJ?
+    let TOP: fragmentCountedChildren<fragmentTrack>?
+    let ALBUMS: fragmentCountedChildren<fragmentAlbum>?
+    let RELATED_ARTISTS: fragmentCountedChildren<fragmentArtist>?
+    let RELATED_PLAYLIST: fragmentCountedChildren<fragmentPlaylist>?
+    let SELECTED_PLAYLIST: fragmentCountedChildren<fragmentPlaylist>?
 
 }
+

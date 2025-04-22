@@ -13,13 +13,13 @@ struct fragmentTrack: Decodable {
     let ART_NAME: String
     let ART_PICTURE: String?
     let DURATION: String
-    let DISK_NUMBER: String
-    let EXPLICIT_LYRICS: String
+    let DISK_NUMBER: String?
+    let EXPLICIT_LYRICS: String?
     let SNG_TITLE: String
     let SNG_ID: String
-    let TRACK_NUMBER: String
-    let TRACK_TOKEN: String
-    let TRACK_TOKEN_EXPIRE: Int
+    let TRACK_NUMBER: String?
+    let TRACK_TOKEN: String?
+    let TRACK_TOKEN_EXPIRE: Int?
     
     let ARTISTS: [fragmentArtist]
     

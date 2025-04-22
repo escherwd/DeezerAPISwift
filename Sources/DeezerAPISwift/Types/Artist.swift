@@ -8,6 +8,8 @@
 import Foundation
 
 public struct DeezerArtist: Decodable {
+    
+    
     let id: Int
     let name: String
     let picture: String?
@@ -21,6 +23,9 @@ public struct DeezerArtist: Decodable {
     let albums: [DeezerAlbum]?
     
     let dateFavorite: Date?
+    
+    let relatedPlaylists: [DeezerPlaylist]?
+    let selectedPlaylists: [DeezerPlaylist]?
 
     static func fromPageArtistResponse(_ response: pageArtistResponse)
         throws -> DeezerArtist
@@ -46,7 +51,13 @@ public struct DeezerArtist: Decodable {
             albums: try response.ALBUMS?.data.map {
                 try DeezerAlbum.fromFragmentAlbumResponse($0)
             },
-            dateFavorite: nil
+            dateFavorite: nil,
+            relatedPlaylists: try response.RELATED_PLAYLIST?.data.map {
+                try DeezerPlaylist.fromFragmentPlaylistResponse($0)
+            },
+            selectedPlaylists: try response.SELECTED_PLAYLIST?.data.map {
+                try DeezerPlaylist.fromFragmentPlaylistResponse($0)
+            }
         )
 
     }
@@ -71,7 +82,9 @@ public struct DeezerArtist: Decodable {
             topTracks: nil,
             relatedArtists: nil,
             albums: nil,
-            dateFavorite: response.DATE_FAVORITE != nil ? dateFormatter.date(from: response.DATE_FAVORITE!) : nil
+            dateFavorite: response.DATE_FAVORITE != nil ? dateFormatter.date(from: response.DATE_FAVORITE!) : nil,
+            relatedPlaylists: nil,
+            selectedPlaylists: nil
         )
 
     }

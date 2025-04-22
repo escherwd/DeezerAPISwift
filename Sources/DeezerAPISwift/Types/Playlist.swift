@@ -8,7 +8,7 @@
 import Foundation
 
 public struct DeezerPlaylist: Decodable {
-
+    
     let id: Int
     let title: String
 
@@ -24,7 +24,7 @@ public struct DeezerPlaylist: Decodable {
 
     let lastSeen: Date?
     let numFans: Int?
-    let numSongs: Int
+    let numSongs: Int?
 
     let parentUserName: String?
     let parentUserId: Int

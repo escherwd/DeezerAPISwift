@@ -7,12 +7,12 @@
 
 struct fragmentPlaylist: Decodable {
     
-    let DATE_ADD: String
+    let DATE_ADD: String?
     let DATE_FAVORITE: String?
     
     let LAST_SEEN: String?
     
-    let NB_SONG: Int
+    let NB_SONG: Int?
     let PARENT_USERNAME: String?
     let PARENT_USER_ID: String
     

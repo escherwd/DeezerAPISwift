@@ -129,7 +129,7 @@ public struct DeezerAlbum: Decodable {
             copyright: nil,
             label: nil,
             artists: nil,
-            dateFavorite: dateFormatter.date(from: response.DATE_FAVORITE),
+            dateFavorite: response.DATE_FAVORITE != nil ? dateFormatter.date(from: response.DATE_FAVORITE!) : nil,
             completeness: .incomplete
         )
 
