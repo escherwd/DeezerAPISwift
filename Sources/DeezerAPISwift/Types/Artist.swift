@@ -8,8 +8,7 @@
 import Foundation
 
 public struct DeezerArtist: Decodable {
-    
-    
+
     let id: Int
     let name: String
     let picture: String?
@@ -21,9 +20,9 @@ public struct DeezerArtist: Decodable {
     let relatedArtists: [DeezerArtist]?
 
     let albums: [DeezerAlbum]?
-    
+
     let dateFavorite: Date?
-    
+
     let relatedPlaylists: [DeezerPlaylist]?
     let selectedPlaylists: [DeezerPlaylist]?
 
@@ -69,7 +68,7 @@ public struct DeezerArtist: Decodable {
         guard let artistId = Int(response.ART_ID) else {
             throw DeezerApiError.invalidResponse
         }
-        
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
@@ -82,7 +81,28 @@ public struct DeezerArtist: Decodable {
             topTracks: nil,
             relatedArtists: nil,
             albums: nil,
-            dateFavorite: response.DATE_FAVORITE != nil ? dateFormatter.date(from: response.DATE_FAVORITE!) : nil,
+            dateFavorite: response.DATE_FAVORITE != nil
+                ? dateFormatter.date(from: response.DATE_FAVORITE!) : nil,
+            relatedPlaylists: nil,
+            selectedPlaylists: nil
+        )
+
+    }
+
+    static func fromApiSearchFragment(_ response: apiSearchArtistFragment)
+        throws -> DeezerArtist
+    {
+
+        return DeezerArtist(
+            id: try response.id.toInt(),
+            name: response.name,
+            picture: try deezerCoverUrlToId(response.picture.large[0]),
+            numFans: response.fansCount,
+            bio: nil,
+            topTracks: nil,
+            relatedArtists: nil,
+            albums: nil,
+            dateFavorite: response.isFavorite ? Date() : nil,
             relatedPlaylists: nil,
             selectedPlaylists: nil
         )

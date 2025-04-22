@@ -47,6 +47,14 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     #expect(tracks.first?.title == "Moving Men (feat. Mac DeMarco)")
 }
 
+@Test func PerformSearch() async throws {
+    let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
+    
+    let searchResults = try await deezerApi.search(q: "Nokia")
+    
+    print(searchResults)
+}
+
 @Test func GetHome() async throws {
     let deezerApi = DeezerAPI(withOnlyArl: deezerArl)
     

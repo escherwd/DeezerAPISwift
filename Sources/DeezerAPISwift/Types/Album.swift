@@ -26,9 +26,9 @@ public struct DeezerAlbum: Decodable {
     let label: String?
 
     let artists: [DeezerArtist]?
-    
+
     let dateFavorite: Date?
-    
+
     let completeness: CompletenessLevel
 
     // Convenience function for creating objects from Deezer JSON response
@@ -112,7 +112,7 @@ public struct DeezerAlbum: Decodable {
         else {
             throw DeezerApiError.invalidResponse
         }
-        
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
@@ -129,21 +129,41 @@ public struct DeezerAlbum: Decodable {
             copyright: nil,
             label: nil,
             artists: nil,
-            dateFavorite: response.DATE_FAVORITE != nil ? dateFormatter.date(from: response.DATE_FAVORITE!) : nil,
+            dateFavorite: response.DATE_FAVORITE != nil
+                ? dateFormatter.date(from: response.DATE_FAVORITE!) : nil,
             completeness: .incomplete
         )
 
     }
-    
-    
-    
+
+    static func fromApiSearchFragment(_ response: apiSearchAlbumFragment) throws -> DeezerAlbum {
+
+        return DeezerAlbum(
+            id: try response.id.toInt(),
+            title: response.displayTitle,
+            pictureId: try deezerCoverUrlToId(response.cover.large[0])!,
+            artistName: response.contributors.edges.map(\.node.name).joined(separator: ", "),
+            artistId: try response.contributors.edges.first!.node.id.toInt(),
+            numFans: nil,
+            releaseDate: response.releaseDateAlbum,
+            tracks: nil,
+            numTracks: response.tracksCount,
+            copyright: nil,
+            label: nil,
+            artists: nil,
+            dateFavorite: response.isFavorite ? Date() : nil,
+            completeness: .incomplete
+        )
+
+    }
+
     enum CompletenessLevel: Int, Decodable {
         // This album was fetched directly from the pageAlbum request. All data available is present.
         case `complete` = 2
-        
+
         // Num. fans missing, label missing. Otherwise totally complete
         case `mostlyComplete` = 1
-        
+
         // Track list missing, artist array missing, num. fans missing. Likely fetched from a user like list.
         case `incomplete` = 0
     }

@@ -33,6 +33,9 @@ public class DeezerAPI {
 
     // The ARL is like a device token, it doesn't change often.
     let arl: String
+    
+    // The JWT is used for new types of requests; everything graphql
+    var jwt: String?
 
     // These other ones do
     var apiToken: String?

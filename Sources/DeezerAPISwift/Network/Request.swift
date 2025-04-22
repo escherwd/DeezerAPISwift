@@ -14,7 +14,8 @@ extension DeezerAPI {
         _ urlString: String,
         parameters: [String: Any]? = nil,
         body: [String: Any]? = nil,
-        method: String = "POST"
+        method: String = "POST",
+        enableGzip: Bool = true
     ) async throws -> Data {
 
         // Create a new URL session
@@ -36,7 +37,9 @@ extension DeezerAPI {
         req.addValue(self.generateCookiesString(), forHTTPHeaderField: "Cookie")
 
         // Using gzip speeds up the request considerably
-        req.addValue("gzip", forHTTPHeaderField: "content-encoding")
+        if enableGzip {
+            req.addValue("gzip", forHTTPHeaderField: "content-encoding")
+        }
         req.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         // Add entries to the body of the request
@@ -47,12 +50,53 @@ extension DeezerAPI {
             )
             req.httpBody = jsonData
         }
+        
+        // If JWT is present, add that too
+        if let jwt = self.jwt {
+            print("adding jwt \(jwt)")
+            req.addValue("Bearer \(jwt)", forHTTPHeaderField: "authorization")
+        }
 
         // Execute Request
         // TODO: more explicit error handling
         let (data, _) = try await session.data(for: req)
 
         return data
+
+    }
+
+    func requestApi<T: Decodable>(
+        operationName: String,
+        query: String,
+        variables: [String: Any],
+        ignoreCredCheck: Bool = false
+    ) async throws -> T {
+
+        // Ensure credentials exist
+        if (self.apiToken == nil || self.lang == nil)
+            && ignoreCredCheck == false
+        {
+            try await self.refreshTokensFromArl()
+        }
+
+        // Request the data
+        let data = try await self.request(
+            "https://pipe.deezer.com/api",
+            body: [
+                "operationName": operationName,
+                "variables": variables,
+                "query": query,
+            ],
+            enableGzip: false // Gzip doesn't play nicely with graphql requests
+        )
+        
+//        print(String(bytes: data, encoding: .utf8)!)
+        
+        // Attempt Decoding
+        return try JSONDecoder().decode(
+            apiBaseResponse<T>.self,
+            from: data
+        ).data
 
     }
 
@@ -87,10 +131,10 @@ extension DeezerAPI {
         )
 
         // First it will try to serialize with an error
-        if let _ = try? JSONDecoder().decode(
+        if (try? JSONDecoder().decode(
             gwLightBaseWithError.self,
             from: data
-        ) {
+        )) != nil {
             //            print(method)
             //            print(err)
             //            print(self.apiToken)

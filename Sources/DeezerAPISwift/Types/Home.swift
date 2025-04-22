@@ -16,12 +16,7 @@ public struct DeezerHome: Decodable {
         case longCardHorizontalGrid = "long-card-horizontal-grid"
     }
 
-    enum DeezerHomeObject: Decodable {
-        case track(DeezerTrack)
-        case album(DeezerAlbum)
-        case playlist(DeezerPlaylist)
-        case artist(DeezerArtist)
-    }
+    
 
     struct Section: Decodable {
 
@@ -31,7 +26,7 @@ public struct DeezerHome: Decodable {
         let title: String
         let groupId: String
 
-        let items: [DeezerHomeObject]
+        let items: [DeezerContentType]
 
     }
 

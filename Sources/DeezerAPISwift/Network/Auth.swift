@@ -5,6 +5,8 @@
 //  Created by Escher Wright-Dykhouse on 4/11/25.
 //
 
+import Foundation
+
 extension DeezerAPI {
     
     func refreshTokensFromArl() async throws {
@@ -20,6 +22,21 @@ extension DeezerAPI {
         self.userId = userInfoRes.USER.USER_ID
         
         self.licenseToken = userInfoRes.USER.OPTIONS.license_token
+        
+    }
+    
+    func refreshJwtTokensFromArl() async throws {
+        
+        let loginData = try await self.request("https://auth.deezer.com/login/arl?jo=p&rto=c&i=c")
+        
+        struct LoginRes: Decodable {
+            let jwt: String
+        }
+        
+        let logistRes: LoginRes = try JSONDecoder().decode(LoginRes.self, from: loginData)
+        
+        self.jwt = logistRes.jwt
+        
         
     }
     

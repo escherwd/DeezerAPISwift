@@ -23,3 +23,16 @@ extension String {
     }
 
 }
+
+func deezerCoverUrlToId(_ url: String?) throws -> String? {
+    
+    guard url != nil else {
+        return nil
+    }
+    
+    guard let substr = url!.matches(of: try Regex("\\/(cover|playlist)\\/([[:alnum:]]+)\\/")).first?[2].substring else {
+        return nil
+    }
+    
+    return String(substr)
+}
