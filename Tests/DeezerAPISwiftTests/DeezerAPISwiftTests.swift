@@ -60,6 +60,8 @@ fileprivate let deezerArl = ProcessInfo.processInfo.environment["DEEZER_TEST_ARL
     
     let home = try await deezerApi.getHome()
     
+    DeezerAlbum.init(id: 0, title: "", pictureId: "", artistName: "", artistId: 0, numFans: 0, releaseDate: "", tracks: nil, numTracks: 0, copyright: "", label: "", artists: [], dateFavorite: nil, completeness: .complete)
+    
     #expect(home.expiresAt > Date())
     #expect(home.sections.count > 0)
 }

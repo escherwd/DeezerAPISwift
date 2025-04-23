@@ -7,7 +7,7 @@
 
 public struct DeezerMedia: Decodable {
     
-    enum DeezerMediaFormat: String, Decodable, CaseIterable {
+    public enum DeezerMediaFormat: String, Decodable, CaseIterable {
         case flac
         case mp3_320
         case mp3_128

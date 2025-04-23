@@ -18,7 +18,7 @@ public struct DeezerHome: Decodable {
 
     
 
-    struct Section: Decodable {
+    public struct Section: Decodable {
 
         // TODO: Add support for enriched section titles
 
