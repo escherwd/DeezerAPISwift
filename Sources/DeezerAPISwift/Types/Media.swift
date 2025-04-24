@@ -15,10 +15,10 @@ public struct DeezerMedia: Decodable {
         case mp3_misc
     }
     
-    let format: DeezerMediaFormat
-    let expires: Int
-    let urls: [String]
+    public let format: DeezerMediaFormat
+    public let expires: Int
+    public let urls: [String]
     
-    let trackId: Int
+    public let trackId: Int
     
 }

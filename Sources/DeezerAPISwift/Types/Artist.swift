@@ -27,22 +27,22 @@ public struct DeezerArtist: Decodable {
     
     
 
-    let id: Int
-    let name: String
-    let picture: String?
+    public let id: Int
+    public let name: String
+    public let picture: String?
 
-    let numFans: Int?
-    let bio: String?
+    public let numFans: Int?
+    public let bio: String?
 
-    let topTracks: [DeezerTrack]?
-    let relatedArtists: [DeezerArtist]?
+    public let topTracks: [DeezerTrack]?
+    public let relatedArtists: [DeezerArtist]?
 
-    let albums: [DeezerAlbum]?
+    public let albums: [DeezerAlbum]?
 
-    let dateFavorite: Date?
+    public let dateFavorite: Date?
 
-    let relatedPlaylists: [DeezerPlaylist]?
-    let selectedPlaylists: [DeezerPlaylist]?
+    public let relatedPlaylists: [DeezerPlaylist]?
+    public let selectedPlaylists: [DeezerPlaylist]?
 
     static func fromPageArtistResponse(_ response: pageArtistResponse)
         throws -> DeezerArtist

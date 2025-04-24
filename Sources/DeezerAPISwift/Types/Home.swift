@@ -30,8 +30,8 @@ public struct DeezerHome: Decodable {
 
     }
 
-    let expiresAt: Date
-    let sections: [Section]
+    public let expiresAt: Date
+    public let sections: [Section]
 
     static func fromPageHomeResponse(_ response: pageHomeReponse) throws
         -> DeezerHome

@@ -25,24 +25,24 @@ public struct DeezerProfile: Decodable {
     }
     
 
-    let name: String
-    let id: Int
+    public let name: String
+    public let id: Int
 
-    let picture: String
+    public let picture: String
 
-    let topTracks: [DeezerTrack]?
-    let topAlbums: [DeezerAlbum]?
-    let topArtists: [DeezerArtist]?
+    public let topTracks: [DeezerTrack]?
+    public let topAlbums: [DeezerAlbum]?
+    public let topArtists: [DeezerArtist]?
 
-    let recentArtists: [DeezerArtist]?
-    let recentAlbums: [DeezerAlbum]?
+    public let recentArtists: [DeezerArtist]?
+    public let recentAlbums: [DeezerAlbum]?
 
-    let lovedTracksId: Int
-    let numFollowers: Int
-    let numFollowing: Int
+    public let lovedTracksId: Int
+    public let numFollowers: Int
+    public let numFollowing: Int
 
-    let isPublic: Bool
-    let isFollowing: Bool
+    public let isPublic: Bool
+    public let isFollowing: Bool
 
     static func fromPageProfileResponse(
         _ response: pageProfileBase<pageProfileHome>

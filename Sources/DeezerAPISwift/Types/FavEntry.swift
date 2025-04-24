@@ -7,7 +7,7 @@
 
 public struct DeezerFavEntry: Decodable {
     
-    let id: Int
-    let dateFavorite: Int
+    public let id: Int
+    public let dateFavorite: Int
     
 }

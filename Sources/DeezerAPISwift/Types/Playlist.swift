@@ -33,35 +33,35 @@ public struct DeezerPlaylist: Decodable {
     }
     
 
-    let id: Int
-    let title: String
+    public let id: Int
+    public let title: String
 
-    let checksum: String?
+    public let checksum: String?
 
-    let dateAdded: String?
-    let dateModified: String?
+    public let dateAdded: String?
+    public let dateModified: String?
 
-    let description: String?
-    let duration: Int?
+    public let description: String?
+    public let duration: Int?
 
-    let isFavorite: Bool
+    public let isFavorite: Bool
 
-    let lastSeen: Date?
-    let numFans: Int?
-    let numSongs: Int?
+    public let lastSeen: Date?
+    public let numFans: Int?
+    public let numSongs: Int?
 
-    let parentUserName: String?
-    let parentUserId: Int
-    let parentUserPicture: String?
+    public let parentUserName: String?
+    public let parentUserId: Int
+    public let parentUserPicture: String?
 
-    let pictureType: DeezerPlaylistPictureType
-    let playlistPicture: String?
+    public let pictureType: DeezerPlaylistPictureType
+    public let playlistPicture: String?
 
-    let status: DeezerPlaylistStatus
+    public let status: DeezerPlaylistStatus
 
-    let collabKey: String?
+    public let collabKey: String?
 
-    let tracks: [DeezerTrack]?
+    public let tracks: [DeezerTrack]?
 
     public enum DeezerPlaylistStatus: Int, Decodable {
 

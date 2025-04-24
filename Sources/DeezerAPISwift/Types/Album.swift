@@ -29,27 +29,27 @@ public struct DeezerAlbum: Decodable {
     
     
 
-    let id: Int
-    let title: String
+    public let id: Int
+    public let title: String
 
-    let pictureId: String
-    let artistName: String
-    let artistId: Int
+    public let pictureId: String
+    public let artistName: String
+    public let artistId: Int
 
-    let numFans: Int?
-    let releaseDate: String
+    public let numFans: Int?
+    public let releaseDate: String
 
-    let tracks: [DeezerTrack]?
-    let numTracks: Int?
+    public let tracks: [DeezerTrack]?
+    public let numTracks: Int?
 
-    let copyright: String?
-    let label: String?
+    public let copyright: String?
+    public let label: String?
 
-    let artists: [DeezerArtist]?
+    public let artists: [DeezerArtist]?
 
-    let dateFavorite: Date?
+    public let dateFavorite: Date?
 
-    let completeness: CompletenessLevel
+    public let completeness: CompletenessLevel
 
     // Convenience function for creating objects from Deezer JSON response
     static func fromPageAlbumResponse(_ response: pageAlbumResponse) throws

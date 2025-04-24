@@ -7,14 +7,14 @@
 
 public struct DeezerSearch {
 
-    let query: String
+    public let query: String
 
-    let topResult: DeezerContentType?
+    public let topResult: DeezerContentType?
 
-    let tracks: [DeezerTrack]
-    let albums: [DeezerAlbum]
-    let artists: [DeezerArtist]
-    let playlists: [DeezerPlaylist]
+    public let tracks: [DeezerTrack]
+    public let albums: [DeezerAlbum]
+    public let artists: [DeezerArtist]
+    public let playlists: [DeezerPlaylist]
 
     // TODO: add profiles?
     static func fromApiResponse(
