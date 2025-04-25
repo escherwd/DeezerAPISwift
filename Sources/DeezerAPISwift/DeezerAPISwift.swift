@@ -23,13 +23,13 @@ public class DeezerAPI {
     
     // Create a new instance of the DeezerAPI with only the ARL. The first request that needs auth will go through the flow, which may add some extra time.
     
-    init(withOnlyArl arl: String, andLang lang: String = "us") {
+    public init(withOnlyArl arl: String, andLang lang: String = "us") {
         self.arl = arl
         self.lang = lang
     }
     
     // Store the userId
-    var userId: Int?
+    public var userId: Int?
 
     // The ARL is like a device token, it doesn't change often.
     let arl: String
@@ -44,6 +44,6 @@ public class DeezerAPI {
     var licenseToken: String?
 
     // The language the API should use
-    var lang: String?
+    public var lang: String?
 
 }
