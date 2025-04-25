@@ -3,7 +3,7 @@
 
 // The basis for all methods relating to the Deezer API
 
-public class DeezerAPI {
+open class DeezerAPI {
 
     // Create a new instance of the DeezerAPI with all data necessary to authorize requests
     // Deprecated; not really worth testing
