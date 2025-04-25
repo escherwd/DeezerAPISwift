@@ -5,9 +5,9 @@
 //  Created by Escher Wright-Dykhouse on 4/14/25.
 //
 
-public struct DeezerMedia: Decodable {
+public struct DeezerMedia: Codable {
     
-    public enum DeezerMediaFormat: String, Decodable, CaseIterable {
+    public enum DeezerMediaFormat: String, Codable, CaseIterable {
         case flac
         case mp3_320
         case mp3_128

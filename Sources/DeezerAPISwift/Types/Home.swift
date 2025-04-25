@@ -7,9 +7,9 @@
 
 import Foundation
 
-public struct DeezerHome: Decodable {
+public struct DeezerHome: Codable {
 
-    enum SectionLayout: String, Decodable {
+    enum SectionLayout: String, Codable {
         case horizontalGrid = "horizontal-grid"
         case horizontalList = "horizontal-list"
         case filterableGrid = "filterable-grid"
@@ -18,7 +18,7 @@ public struct DeezerHome: Decodable {
 
     
 
-    public struct Section: Decodable {
+    public struct Section: Codable {
 
         // TODO: Add support for enriched section titles
 

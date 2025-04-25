@@ -5,7 +5,7 @@
 //  Created by Escher Wright-Dykhouse on 4/21/25.
 //
 
-public struct DeezerSearch {
+public struct DeezerSearch: Codable {
 
     public let query: String
 
